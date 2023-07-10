@@ -30,6 +30,31 @@
   </div>
 </template>
 
+<style>
+/* Your CSS styles here */
+
+.fixed-container {
+  position: absolute;
+  top: 200px;
+  left: 0;
+  width: 100%;
+}
+
+.no-images {
+  margin-top: 50px;
+  font-size: 18px;
+}
+
+.swiper-slide {
+  display: inline-block;
+  width: 25%;
+  vertical-align: top;
+  box-sizing: border-box;
+  padding: 10px;
+}
+</style>
+
+
 <script setup>
 import { ref, onMounted } from 'vue';
 import Swiper from 'swiper';
@@ -41,7 +66,9 @@ const password = 'your_password_here';
 const generationStatus = ref(null);
 const imagesRef = ref([]);
 
-const eat = () => {location.reload();}
+const eat = () => {
+  location.reload();
+}
 
 async function handleSubmit() {
   try {
@@ -62,7 +89,7 @@ async function handleSubmit() {
       // Hard reload the page after 10 seconds
       setTimeout(() => {
         location.reload();
-      }, 10000);
+      }, 9000);
     } else {
       throw new Error(data.error); // Throw an error if the response is not successful
     }
@@ -252,7 +279,7 @@ html {
 .download-button {
   position: absolute;
   top: 50%;
-font-size: 2rem;
+  font-size: 2rem;
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 10px 20px;
