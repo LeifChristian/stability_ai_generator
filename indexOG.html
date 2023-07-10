@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Generate Image</title>
+	<style>
+		body {
+			background-color: black;
+			color: white;
+			text-align: center;
+			font-family: Arial, sans-serif;
+		}
+
+		.container {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			margin-top: 100px;
+		}
+
+		.title {
+			font-size: 24px;
+			margin-bottom: 20px;
+		}
+
+		.image-container {
+			margin-top: 30px;
+		}
+
+		.image {
+			width: 200px;
+			height: 200px;
+			margin-top: 10px;
+			border-radius: 5px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<h2 class="title">Generate Image</h2>
+		<form id="image-form">
+			<input type="text" name="text" placeholder="Enter text" required>
+			<br><br>
+			<input type="submit" value="Generate">
+		</form>
+		<div id="image-container" class="image-container"></div>
+	</div>
+
+	<script>
+		const form = document.getElementById('image-form');
+		const imageContainer = document.getElementById('image-container');
+		const password = 'your_password_here'; // Replace with your actual password
+
+		form.addEventListener('submit', async (e) => {
+			e.preventDefault();
+
+			const textInput = form.elements.text;
+			const text = textInput.value;
+
+			const response = await fetch('http://localhost:3000/generate-image', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ password, text }),
+			});
+
+			const data = await response.json();
+			const imageUrl = data.imageUrl;
+
+			const imageElement = document.createElement('img');
+			imageElement.src = imageUrl;
+			console.log('Image URL:', imageUrl);
+			imageElement.classList.add('image');
+
+			imageContainer.innerHTML = '';
+			imageContainer.appendChild(imageElement);
+		});
+	</script>
+</body>
+
+</html>

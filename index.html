@@ -1,0 +1,49 @@
+<template>
+	<div class="container">
+		<h2 class="title">Generate Image</h2>
+		<form @submit="handleSubmit">
+			<input v-model="text" type="text" name="text" placeholder="Enter text" required>
+			<br><br>
+			<button type="submit">Generate</button>
+		</form>
+		<div class="image-container">
+			<img v-for="imageUrl in imageUrls" :key="imageUrl" :src="imageUrl" class="image" />
+		</div>
+	</div>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				text: '',
+				imageUrls: [],
+				password: 'your_password_here', // Replace with your actual password
+			};
+		},
+		methods: {
+			async handleSubmit(event) {
+				event.preventDefault();
+
+				try {
+					const response = await fetch('http://localhost:3000/generate-image', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+						body: JSON.stringify({ password: this.password, text: this.text }),
+					});
+
+					const data = await response.json();
+					this.imageUrls = data.imageUrls;
+				} catch (error) {
+					console.error(error);
+				}
+			},
+		},
+	};
+</script>
+
+<style>
+	/* CSS styles here */
+</style>
