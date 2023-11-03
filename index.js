@@ -10,7 +10,7 @@ const app = express();
 const engineId = 'stable-diffusion-v1-5';
 const apiHost = 'https://api.stability.ai';
 const apiKey = process.env.API_KEY;
-console.log(apiKey, 'EEEEE')
+// console.log(apiKey, 'EEEEE')
 const outDirectory = path.join(__dirname, 'out');
 
 // Create the "out" directory if it doesn't exist
@@ -98,7 +98,6 @@ app.get('/get-images', (req, res) => {
   });
   
 
-
 app.post('/generate-image', async (req, res) => {
 	const { password, text } = req.body;
 
@@ -157,6 +156,44 @@ app.post('/generate-image', async (req, res) => {
 		res.status(500).json({ error: 'An error occurred while generating the image.' });
 	}
 });
+
+
+
+app.post('/delete-image', async (req, res) => {
+	const { password, text } = req.body;
+
+	console.log(text, 'text to backend')
+
+	if (password !== 'your_password_here') {
+		return res.status(401).json({ error: 'Invalid password.' });
+	}
+
+	try {
+		// var filePath = 'c:/book/discovery.docx'; 
+		// fs.unlinkSync(filePath);
+		console.log(outDirectory, 'directory/path')
+		const files = fs.readdirSync(outDirectory);
+
+		if (fs.existsSync(`${outDirectory}/${text}`)) {
+			// File exists, so delete it
+			fs.unlinkSync(`${outDirectory}/${text}`);
+		  } else {
+			console.log('The file does not exist.');
+		  }
+
+		console.log(files, 'files')
+		const imageUrls = files.map((file) => {
+			return `${req.protocol}://${req.get('host')}/out/${file}`;
+		});
+
+		// Send the image URLs as a response
+		res.json({ imageUrls });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ error: 'An error occurred while generating the image.' });
+	}
+});
+
 
 // Serve the images at the /out directory
 app.use('/out', express.static(outDirectory));

@@ -16,8 +16,9 @@
         <div v-for="(image, index) in images" :key="index" class="swiper-slide">
           <div class="image-wrapper">
             <img :src="image?.url" :class="{ 'image-enlarged': isEnlarged(index) }" @click="toggleEnlarged(index)" />
+            {{ JSON.stringify(image.url.slice(26,50)) }}
             <div v-if="isEnlarged(index)" class="overlay">
-              <button class="delete-button" @click="deleteImage(index)">X</button>
+              <button class="delete-button" @click="deleteImage(index, image.url.slice(26,50))">X</button>
               <a :download="image?.name" :href="getDownloadURL(image?.url)" @click="downloadImage(image?.url)">
                 <button v-show="isEnlarged(index)" class="download-button">Download</button>
               </a>
@@ -141,9 +142,32 @@ function toggleEnlarged(index) {
   }
 }
 
-function deleteImage(index) {
+async function deleteImage(index, filename) {
+
+  let sure = confirm('sure?')
+// getting filename
+
+
+if(sure){
+
+const response = await fetch('http://localhost:3000/delete-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password, text: filename }),
+    });
+
+    const data = await response.json();
+
+
   images.value.splice(index, 1);
   imagesRef.value = [...images.value]; // Update the images ref to trigger a re-render
+
+
+  console.log(data, 'data to frontend from delete route')
+}
+else{return}
 }
 
 async function getDownloadURL(imageURL) {

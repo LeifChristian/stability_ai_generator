@@ -111,7 +111,26 @@ function toggleEnlarged(index) {
 }
 
 function deleteImage(index) {
+
+  console.log(index, images.value)
   images.value.splice(index, 1);
+
+  try {
+    const response = await fetch('http://localhost:3000/delete-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ password, text: text.value }),
+    });
+
+    const data = await response.json();}
+
+     catch{
+      console.log('no')
+     }
+
+
 }
 
 async function getDownloadURL(imageURL) {
