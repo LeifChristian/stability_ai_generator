@@ -13,7 +13,7 @@
     <button v-if="!images || images.length === 0" @click="eat">Reload</button>
     <div class="swiper-container" ref="swiperContainer" v-else>
       <div class="swiper-wrapper">
-        <div v-for="(image, index) in images.reverse()" :key="index" class="swiper-slide">
+        <div v-for="(image, index) in reversedImages" :key="index" class="swiper-slide">
           <div class="image-wrapper">
             <img :src="image?.url" :class="{ 'image-enlarged': isEnlarged(index) }" @click="toggleEnlarged(index)" />
             {{ JSON.stringify(image?.url?.slice(26, 50)).replace(/"/g, '').replace('.png', '') }}

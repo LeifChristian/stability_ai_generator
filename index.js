@@ -140,9 +140,10 @@ app.post('/generate-image', async (req, res) => {
 
 		const imageBase64 = response.data.artifacts[0].base64;
 		const imageBuffer = Buffer.from(imageBase64, 'base64');
-		console.log(text, 'thetext?')
-		const imagePath = path.join(outDirectory, `${text.slice(0, 25)}.png`);
-
+	
+		const sanitizedText = text.replace(/[^\w\s-]+/g, ''); // Removes special characters, leaving only letters, numbers, spaces, and hyphens
+		console.log(sanitizedText, 'thetext?')
+		const imagePath = path.join(outDirectory, `${sanitizedText.slice(0, 25)}.png`);
 		fs.writeFileSync(imagePath, imageBuffer);
 
 		const files = fs.readdirSync(outDirectory);
