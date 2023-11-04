@@ -16,7 +16,7 @@
         <div v-for="(image, index) in images" :key="index" class="swiper-slide">
           <div class="image-wrapper">
             <img :src="image?.url" :class="{ 'image-enlarged': isEnlarged(index) }" @click="toggleEnlarged(index)" />
-            {{ JSON.stringify(image.url.slice(26,50)) }}
+            {{ JSON.stringify(image?.url?.slice(26,50)) }}
             <div v-if="isEnlarged(index)" class="overlay">
               <button class="delete-button" @click="deleteImage(index, image.url.slice(26,50))">X</button>
               <a :download="image?.name" :href="getDownloadURL(image?.url)" @click="downloadImage(image?.url)">
@@ -57,7 +57,7 @@
 
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import Swiper from 'swiper';
 
 const text = ref('');
@@ -104,6 +104,12 @@ onMounted(async () => {
   await fetchImages();
   initializeSwiper();
 });
+
+watch((images, newImages)=>{images = newImages
+
+return newImages})
+
+
 
 function fetchImages() {
   return fetch('http://localhost:3000/get-images')
@@ -263,10 +269,15 @@ html {
 }
 
 .image {
-  width: 100%;
-  height: 100%;
+  width: 150%;
+  height: 150%;
   object-fit: cover;
   transition: transform 0.3s;
+}
+
+img:hover {
+  width: 100%; height: 100%;
+  object-fit:fit-content;
 }
 
 .image-enlarged {
