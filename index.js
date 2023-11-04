@@ -164,6 +164,8 @@ app.post('/generate-image', async (req, res) => {
 app.post('/delete-image', async (req, res) => {
 	const { password, text } = req.body;
 
+
+	console.log(text, 'SDSSSSSSS')
 	console.log(text, 'text to backend')
 
 	if (password !== 'your_password_here') {
@@ -173,12 +175,15 @@ app.post('/delete-image', async (req, res) => {
 	try {
 		// var filePath = 'c:/book/discovery.docx'; 
 		// fs.unlinkSync(filePath);
-		console.log(outDirectory, 'directory/path')
+		console.log(outDirectory, '<-- directory path')
 		const files = fs.readdirSync(outDirectory);
 
-		if (fs.existsSync(`${outDirectory}/${text}`)) {
+		console.log(outDirectory + "\\" + text, '______')
+		const thing = `${outDirectory}\\text.replace`
+
+		if (fs.existsSync(`${outDirectory}\\${text.replace('http://localhost:3000/out/', '')}`)) {
 			// File exists, so delete it
-			fs.unlinkSync(`${outDirectory}/${text}`);
+			fs.unlinkSync(`${outDirectory}\\${text.replace('http://localhost:3000/out/', '')}`);
 		  } else {
 			console.log('The file does not exist.');
 		  }

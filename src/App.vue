@@ -16,7 +16,7 @@
         <div v-for="(image, index) in reversedImages" :key="index" class="swiper-slide">
           <div class="image-wrapper">
             <img :src="image?.url" :class="{ 'image-enlarged': isEnlarged(index) }" @click="toggleEnlarged(index)" />
-            {{ JSON.stringify(image?.url?.slice(26, 50)).replace(/"/g, '').replace('.png', '') }}
+            {{ JSON.stringify(image?.url?.slice(26, 50))?.replace(/"/g, '')?.replace('.png', '') }}
 
             <div v-if="isEnlarged(index)" class="overlay">
               <button class="delete-button" @click="deleteImage(index, image.url)">X</button>
@@ -111,9 +111,10 @@ const reversedImages = computed(() => {
   return images.value.slice().reverse();
 });
 
-watch((images, newImages)=>{images = newImages
-
-return newImages})
+watch([images, imagesRef], (newValue, oldValue) => {
+  // This callback runs when myReactiveProperty changes
+  console.log('Property changed from', oldValue, 'to', newValue);
+});
 
 
 
@@ -170,14 +171,16 @@ const response = await fetch('http://localhost:3000/delete-image', {
       body: JSON.stringify({ password, text: filename }),
     });
 
+
+  console.log('filename', filename)
     const data = await response.json();
 
 
   images.value.splice(index, 1);
   imagesRef.value = [...images.value]; // Update the images ref to trigger a re-render
 
-
   console.log(data, 'data to frontend from delete route')
+  
 }
 else{return}
 }
