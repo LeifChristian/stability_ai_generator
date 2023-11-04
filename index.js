@@ -141,7 +141,7 @@ app.post('/generate-image', async (req, res) => {
 		const imageBase64 = response.data.artifacts[0].base64;
 		const imageBuffer = Buffer.from(imageBase64, 'base64');
 		console.log(text, 'thetext?')
-		const imagePath = path.join(outDirectory, `${Date.now()}.png`);
+		const imagePath = path.join(outDirectory, `${text.slice(0, 25)}.png`);
 
 		fs.writeFileSync(imagePath, imageBuffer);
 

@@ -13,12 +13,13 @@
     <button v-if="!images || images.length === 0" @click="eat">Reload</button>
     <div class="swiper-container" ref="swiperContainer" v-else>
       <div class="swiper-wrapper">
-        <div v-for="(image, index) in images" :key="index" class="swiper-slide">
+        <div v-for="(image, index) in images.reverse()" :key="index" class="swiper-slide">
           <div class="image-wrapper">
             <img :src="image?.url" :class="{ 'image-enlarged': isEnlarged(index) }" @click="toggleEnlarged(index)" />
-            {{ JSON.stringify(image?.url?.slice(26,50)) }}
+            {{ JSON.stringify(image?.url?.slice(26, 50)).replace(/"/g, '').replace('.png', '') }}
+
             <div v-if="isEnlarged(index)" class="overlay">
-              <button class="delete-button" @click="deleteImage(index, image.url.slice(26,50))">X</button>
+              <button class="delete-button" @click="deleteImage(index, image.url)">X</button>
               <a :download="image?.name" :href="getDownloadURL(image?.url)" @click="downloadImage(image?.url)">
                 <button v-show="isEnlarged(index)" class="download-button">Download</button>
               </a>
@@ -57,7 +58,7 @@
 
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import Swiper from 'swiper';
 
 const text = ref('');
@@ -103,6 +104,11 @@ async function handleSubmit() {
 onMounted(async () => {
   await fetchImages();
   initializeSwiper();
+});
+
+const reversedImages = computed(() => {
+  // Use the Array.prototype.reverse() method to reverse the order of the images array
+  return images.value.slice().reverse();
 });
 
 watch((images, newImages)=>{images = newImages
