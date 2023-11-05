@@ -16,12 +16,12 @@
         <div v-for="(image, index) in reversedImages" :key="index" class="swiper-slide">
           <div class="image-wrapper">
             <img :src="image?.url" :class="{ 'image-enlarged': isEnlarged(index) }" @click="toggleEnlarged(index)" alt="one sec"/>
-            {{ JSON.stringify(image?.url?.slice(26, 53))?.replace(/"/g, '')?.replaceAll('.png', '') }}
+            {{ JSON.stringify(image?.url?.slice(26, 53))?.replace(/"/g, '')?.replaceAll('.png', '') }}{{ isEnlarged(index) }}
 
             <div v-if="isEnlarged(index)" class="overlay">
               <button class="delete-button" @click="deleteImage(index, image.url)">X</button>
-              <a :download="extractFileName(image?.url)">
-                <button v-show="isEnlarged(index)" class="download-button" @click="downloadImage(image)">Download</button>
+              <a :download="getFileName(image.url)" @click="downloadImage(image)">
+                <button v-show="isEnlarged(index)" class="download-button">Download</button>
               </a>
             </div>
           </div>
@@ -85,6 +85,7 @@ async function handleSubmit() {
     const data = await response.json();
     if (response.ok) {
       images.value.push(data.image); // Add the newly generated image to the existing images
+      console.log(data, 'wtf is this .image')
       generationStatus.value = 'success';
       imagesRef.value = [...images.value]; // Update the images ref to trigger a re-render
 
@@ -113,7 +114,7 @@ const reversedImages = computed(() => {
 
 watch([images, imagesRef], (newValue, oldValue) => {
   // This callback runs when myReactiveProperty changes
-  console.log('Property changed from', oldValue, 'to', newValue);
+  console.log('Property changed from', oldValue.value, 'to', newValue.value);
 });
 
 
@@ -160,7 +161,6 @@ async function deleteImage(index, filename) {
   let sure = confirm('sure?')
 // getting filename
 
-
 if(sure){
 
 const response = await fetch('http://localhost:3000/delete-image', {
@@ -185,41 +185,36 @@ const response = await fetch('http://localhost:3000/delete-image', {
 else{return}
 }
 
-async function getDownloadURL(imageURL) {
-  try {
-    const response = await fetch(imageURL);
-    const blob = await response.blob();
-    const url = URL.createObjectURL(blob);
-    return url;
-  } catch (error) {
-    console.error(error);
-    return '';
-  }
-}
-
-function extractFileName(url) {
-  // Split the URL by '/' and get the last part (the file name)
-  const parts = url.split('/');
-  const fileName = parts[parts.length - 1];
-
-  // Decode any URI-encoded characters and return the file name
-  return decodeURI(fileName);
-}
 
 async function downloadImage(image) {
+  const fullImageUrl = image.name; // Use the full image URL
+  console.log(image.name, 'name???????????????????')
   try {
-    const url = await getDownloadURL(image.url);
+  
+    const url = image.url
+    console.log(url, 'fuck ass')
     const link = document.createElement('a');
+
     link.href = url;
-    link.download = extractFileName(image.url);
+    link.download = url // Set the download attribute to the extracted filename
+
+
     link.click();
+
+
   } catch (error) {
     console.error(error);
   }
-
-
-
 }
+
+function getFileName(imageUrl) {
+  // Extract the filename from the URL
+  const urlParts = imageUrl.split('/');
+  const filename = urlParts[urlParts.length - 1];
+  alert(filename, 'fuckingf dfilewname')
+  return filename;
+}
+
 
 </script>
 
